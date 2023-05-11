@@ -41,7 +41,8 @@ unset(mvapich_xtradeps)
 #
 umbrella_download (MVAPICH_DOWNLOAD mvapich ${MVAPICH_URLFILE}
     URL "${MVAPICH_BASEURL}/${MVAPICH_URLDIR}/${MVAPICH_URLFILE}"
-    URL_MD5 ${MVAPICH_URLMD5})
+    URL_MD5 ${MVAPICH_URLMD5}
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
 umbrella_patchcheck (MVAPICH_PATCHCMD mvapich)
 
 #

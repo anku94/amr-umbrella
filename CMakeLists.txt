@@ -51,6 +51,8 @@
 
 cmake_minimum_required (VERSION 3.0)
 
+cmake_policy(SET CMP0135 NEW)
+
 #
 # put the umbrella scripts in our search path and include umbrella-init
 # (umbrella-init needs to run before "project")
@@ -83,27 +85,51 @@ include (umbrella-main)
 # propagate the MPICXX setting to all cmake subprojects
 #
 list(APPEND UMBRELLA_CMAKECACHE
-     -DMPI_CXX_SKIP_MPICXX:BOOL=${MPI_CXX_SKIP_MPICXX})
+  -DMPI_CXX_SKIP_MPICXX:BOOL=${MPI_CXX_SKIP_MPICXX})
 
 
 #
 # set git tags to the versions we want to stick to by default...
 #
-umbrella_opt_default (DELTAFS_COMMON_TAG "v19.8")
+umbrella_opt_default (PDLFS_COMMON_TAG "master")
 umbrella_opt_default (HDF5_TAG "develop")
 umbrella_opt_default (HDF5_ENABLE_PARALLEL ON)
+umbrella_opt_default (HDF5_BUILD_EXAMPLES OFF)
+
+umbrella_opt_default (UMBRELLA_BUILD_RDMALIBS ON)
+umbrella_opt_default (MVAPICH_DEVICE "ch3:psm")
 
 #
 # any additional cache variables we want to add that are not already
 # part of the umbrella?
 #
+set (AMR_VERBOSE "0" CACHE STRING "amr verbose level")
+set_property (CACHE AMR_VERBOSE PROPERTY STRINGS "0"
+  "1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
+message (STATUS "  amr_verbose: ${AMR_VERBOSE}")
+
+#
+# set other configs before we start pulling in the pieces...
+#
+
+# note: NA_INITIALLY_ON is only applied as the defaults the first time
+# you run cmake.  if you want to reconfigure, change MERCURY_BMI, et al.
+umbrella_opt_default (MERCURY_NA_INITIALLY_ON "bmi;ofi;sm")
+
+set (PDLFS_OPTIONS -DPDLFS_MERCURY_RPC=ON -DPDLFS_SNAPPY=OFF
+  -DPDLFS_GFLAGS=OFF -DPDLFS_GLOG=OFF
+  -DPDLFS_VERBOSE=${DELTAFS_VERBOSE})
+
 
 #
 # set other configs before we start pulling in the pieces...
 #
 
 set (PDLFS_OPTIONS -DPDLFS_MERCURY_RPC=OFF -DPDLFS_SNAPPY=OFF
-                   -DPDLFS_GFLAGS=OFF -DPDLFS_GLOG=OFF
-                   -DPDLFS_VERBOSE=${DELTAFS_VERBOSE})
+  -DPDLFS_GFLAGS=OFF -DPDLFS_GLOG=OFF
+  -DPDLFS_VERBOSE=${AMR_VERBOSE})
 
+include (umbrella/mvapich)
 include (umbrella/hdf5)
+include (umbrella/pdlfs-common)
+include (umbrella/tau)
