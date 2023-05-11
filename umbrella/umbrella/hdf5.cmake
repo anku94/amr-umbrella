@@ -71,7 +71,7 @@ umbrella_patchcheck (HDF5_PATCHCMD hdf5)
 #
 # create mercury target
 #
-ExternalProject_Add (hdf5
+ExternalProject_Add (hdf5 DEPENDS mvapich
     ${HDF5_DOWNLOAD} ${HDF5_PATCHCMD}
     CMAKE_ARGS ${HDF5_CMAKE_ARGS}
     CMAKE_CACHE_ARGS ${UMBRELLA_CMAKECACHE}

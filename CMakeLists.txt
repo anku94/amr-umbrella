@@ -92,7 +92,7 @@ list(APPEND UMBRELLA_CMAKECACHE
 # set git tags to the versions we want to stick to by default...
 #
 umbrella_opt_default (PDLFS_COMMON_TAG "master")
-umbrella_opt_default (HDF5_TAG "develop")
+umbrella_opt_default (HDF5_TAG "hdf5_1_12_2")
 umbrella_opt_default (HDF5_ENABLE_PARALLEL ON)
 umbrella_opt_default (HDF5_BUILD_EXAMPLES OFF)
 
@@ -133,3 +133,5 @@ include (umbrella/mvapich)
 include (umbrella/hdf5)
 include (umbrella/pdlfs-common)
 include (umbrella/tau)
+include (umbrella/amr-tools)
+include (umbrella/phoebus)
