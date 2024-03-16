@@ -26,6 +26,24 @@ umbrella_defineopt (PSM_REPO "https://github.com/pdlfs/psm.git"
 umbrella_defineopt (PSM_TAG "master" STRING "PSM GIT tag")
 umbrella_defineopt (PSM_TAR "psm-${PSM_TAG}.tar.gz" STRING
                     "PSM cache tar file")
+umbrella_defineopt (PSM_DEBUG OFF BOOL
+                    "Build PSM with debug flags")
+umbrella_defineopt (PSM_DISABLE_INLINES OFF BOOL
+                    "Patch PSM to disable inline funcs")
+
+set(psm-cppflags "")
+set(config-sedcmd "")
+
+if (PSM_DEBUG)
+  message(INFO "PSM Debug Build enabled. May be slow")
+  set(psm-cppflags "CFLAGS=-fvisibility=default -fno-inline")
+endif()
+
+if (PSM_DISABLE_INLINES)
+  message(WARNING "PSM will be patched to disable always_inline. May be very slow!!")
+  # set(config-sedcmd "sed 's/ __attribute__((always_inline))/ \/*__attribute__((always_inline))*\//g' <SOURCE_DIR>/psm_help.h")
+endif()
+
 
 #
 # generate parts of the ExternalProject_Add args...
@@ -39,7 +57,7 @@ umbrella_patchcheck (PSM_PATCHCMD psm)
 # create psm target
 #
 ExternalProject_Add (psm ${PSM_DOWNLOAD} ${PSM_PATCHCMD}
-    CONFIGURE_COMMAND ""
+    CONFIGURE_COMMAND "${config-sedcmd}"
     BUILD_IN_SOURCE 1      # old school makefiles
     BUILD_COMMAND make ${UMBRELLA_COMP}
                        ${UMBRELLA_CPPFLAGS} ${UMBRELLA_LDFLAGS}
