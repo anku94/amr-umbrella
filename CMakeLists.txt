@@ -99,6 +99,7 @@ umbrella_opt_default (HDF5_BUILD_EXAMPLES OFF)
 
 # GLOG 0.6 is the last major version that builds against pdlfs-common without breaking
 umbrella_opt_default (GLOG_TAG "v0.6.0")
+umbrella_opt_default (KOKKOS_TAG "3.5.00")
 
 umbrella_opt_default (UMBRELLA_BUILD_RDMALIBS ON)
 umbrella_opt_default (MVAPICH_DEVICE "ch3:psm")
