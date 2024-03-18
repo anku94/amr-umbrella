@@ -32,13 +32,18 @@ umbrella_patchcheck (KOKKOS_PATCHCMD kokkos)
 #
 # depends
 #
-include (umbrella/mvapich)
+set (KOKKOS_DEPENDS )
+
+if (UMBRELLA_MPI_DEPS)
+  include (umbrella/${UMBRELLA_MPI_DEPS})
+  list(APPEND KOKKOS_DEPENDS ${UMBRELLA_MPI_DEPS})
+endif()
 
 #
 # create kokkos target
 #
 ExternalProject_Add (kokkos
-    DEPENDS mvapich
+    DEPENDS ${KOKKOS_DEPENDS}
     ${KOKKOS_DOWNLOAD} ${KOKKOS_PATCHCMD}
     CMAKE_ARGS -DKokkos_ENABLE_AGGRESSIVE_VECTORIZATION=ON
     CMAKE_CACHE_ARGS ${UMBRELLA_CMAKECACHE}

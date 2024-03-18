@@ -367,7 +367,9 @@ endfunction()
 # public UMBRELLA_* variables:
 #
 #   UMBRELLA_PREFIX: base directory for umbrella files
-#   UMBRELLA_MPI: user sets this if we are using MPI (default=off)
+#   UMBRELLA_MPI_PROV: MPI provider to use (none, system, mpich, mvapich)
+#   UMBRELLA_MPI_DEPS: (read only) set if UMBRELLA_MPI_PROV is not none or system
+#   UMBRELLA_MPI: (deprecated?) user sets this if we are using MPI (default=off)
 #   UMBRELLA_BUILDTESTS: default setting for building unit tests (default=off)
 #   UMBRELLA_RUNTESTS: default setting for running unit tests (default=off)
 #   UMBRELLA_HAS_GNULIBDIRS: built pkg has non-"lib" dir (eg. "lib64") (def=off)
@@ -429,6 +431,36 @@ get_filename_component (UMBRELLA_PREFIX ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
 # all umbrella builds use the build-in cmake ExternalProject routines
 #
 include (ExternalProject)
+
+#
+# Handle MPI. If using system MPI, we hijack the older UMBRELLA_MPI mechanism.
+# If using own MPI, we set UMBRELLA_MPI_DEPS to that package (like mvapich).
+# This variable must be used by downstream packages to set their DEPENDS
+# for parallel builds to work correctly
+#
+# if using own MPI, this is set to that package (like mvapich)
+set (UMBRELLA_MPI_DEPS "" CACHE STRING "MPI deps to include (if using own MPI)")
+mark_as_advanced (UMBRELLA_MPI_DEPS)
+
+set (UMBRELLA_MPI_PROV "none" CACHE STRING "MPI to use")
+set (UMBRELLA_MPI_PROV_ALLOWED_VALUES none system mpich mvapich)
+set_property(CACHE UMBRELLA_MPI_PROV PROPERTY STRINGS ${UMBRELLA_MPI_PROV_ALLOWED_VALUES})
+
+list(FIND UMBRELLA_MPI_PROV_ALLOWED_VALUES "${UMBRELLA_MPI_PROV}" _index)
+if ("${_index}" EQUAL "-1")
+    message (FATAL_ERROR "Invalid value for UMBRELLA_MPI: ${UMBRELLA_MPI_PROV}")
+endif ()
+#
+# if system, hijack the older MPI detection mechanisms
+if (UMBRELLA_MPI_PROV STREQUAL "system")
+    set (UMBRELLA_MPI 1)
+else ()
+    set (UMBRELLA_MPI 0)
+endif()
+
+if (NOT (UMBRELLA_MPI_PROV STREQUAL "none" OR UMBRELLA_MPI_PROV STREQUAL "system"))
+    set (UMBRELLA_MPI_DEPS "${UMBRELLA_MPI_PROV}")
+endif ()
 
 #
 # pull in MPI if requested
@@ -599,6 +631,7 @@ message (STATUS "The umbrella framework is enabled")
 # print the current config so users are aware of the current settings...
 #
 message (STATUS "Current Umbrella settings:")
+message (STATUS "  MPI provider: ${UMBRELLA_MPI_PROV}")
 message (STATUS "  target OS: ${CMAKE_SYSTEM_NAME} "
                              "${CMAKE_SYSTEM_VERSION}")
 message (STATUS "  host OS: ${CMAKE_HOST_SYSTEM_NAME} "

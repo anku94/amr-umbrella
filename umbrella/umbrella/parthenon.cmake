@@ -32,16 +32,27 @@ umbrella_patchcheck (PARTHENON_PATCHCMD parthenon)
 #
 # depends
 #
+set (PARTHENON_DEPENDS amr-tools)
 include (umbrella/amr-tools)
-include (umbrella/hdf5)
+
+if (NOT PARTHENON_DISABLE_HDF5)
+    set (PARTHENON_DEPENDS ${PARTHENON_DEPENDS} hdf5)
+endif()
+
+set (PARTHENON_CMAKE_ARGS -DBUILD_SHARED_LIBS=ON -DTAU_ROOT=${CMAKE_INSTALL_PREFIX}
+    -DPARTHENON_DISABLE_HDF5=${PARTHENON_DISABLE_HDF5})
+
+if (UMBRELLA_MPI_DEPS)
+    include (umbrella/${UMBRELLA_MPI_DEPS})
+endif()
 
 #
 # create parthenon target
 #
 ExternalProject_Add (parthenon
-    DEPENDS amr-tools hdf5
+    DEPENDS ${PARTHENON_DEPENDS}
     ${PARTHENON_DOWNLOAD} ${PARTHENON_PATCHCMD}
-    CMAKE_ARGS -DBUILD_SHARED_LIBS=ON -DTAU_ROOT=${CMAKE_INSTALL_PREFIX}
+    CMAKE_ARGS ${PARTHENON_CMAKE_ARGS}
     CMAKE_CACHE_ARGS ${UMBRELLA_CMAKECACHE}
     UPDATE_COMMAND ""
 )

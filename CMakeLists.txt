@@ -78,7 +78,8 @@ project (amr-umbrella C CXX)
 #
 # configure umbrella for MPI and pull in the main routines
 #
-set (UMBRELLA_MPI 1)
+
+
 include (umbrella-main)
 
 #
@@ -98,6 +99,7 @@ umbrella_opt_default (HDF5_BUILD_EXAMPLES OFF)
 
 umbrella_opt_default (UMBRELLA_BUILD_RDMALIBS ON)
 umbrella_opt_default (MVAPICH_DEVICE "ch3:psm")
+umbrella_opt_default (PARTHENON_DISABLE_HDF5 ON)
 
 #
 # any additional cache variables we want to add that are not already
@@ -116,7 +118,11 @@ set (PDLFS_OPTIONS -DPDLFS_MERCURY_RPC=OFF -DPDLFS_SNAPPY=OFF
     -DPDLFS_GFLAGS=OFF -DPDLFS_GLOG=ON
   -DPDLFS_VERBOSE=${AMR_VERBOSE})
 
-include (umbrella/mvapich)
+
+if (UMBRELLA_MPI_DEPS)
+    include (umbrella/${UMBRELLA_MPI_DEPS})
+endif()
+
 include (umbrella/pdlfs-common)
 include (umbrella/amr-tools)
 include (umbrella/parthenon)

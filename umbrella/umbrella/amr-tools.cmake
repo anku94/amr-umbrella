@@ -44,6 +44,11 @@ list(APPEND AMR_TOOLS_DEPENDS pdlfs-common)
 include (umbrella/kokkos)
 list(APPEND AMR_TOOLS_DEPENDS kokkos)
 
+if (UMBRELLA_MPI_DEPS)
+  include (umbrella/${UMBRELLA_MPI_DEPS})
+  list(APPEND AMR_TOOLS_DEPENDS ${UMBRELLA_MPI_DEPS})
+endif()
+
 if (AMR_TOOLS_GUROBI)
   include (umbrella/gurobi)
   list(APPEND AMR_TOOLS_DEPENDS gurobi)
