@@ -18,8 +18,7 @@ if (NOT TARGET glog)
 umbrella_defineopt (GLOG_REPO "https://github.com/google/glog.git"
      STRING "glog GIT repository")
 
-# v0.6.0 is the last major vrsion that compiles with pdlfs-common without needing changes
-umbrella_defineopt (GLOG_TAG "v0.6.0" STRING "glog GIT tag")
+umbrella_defineopt (GLOG_TAG "master" STRING "glog GIT tag")
 umbrella_defineopt (GLOG_TAR "glog-${GLOG_TAG}.tar.gz"
      STRING "glog cache tar file")
 

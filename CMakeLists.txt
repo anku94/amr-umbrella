@@ -97,6 +97,9 @@ umbrella_opt_default (HDF5_TAG "hdf5_1_12_2")
 umbrella_opt_default (HDF5_ENABLE_PARALLEL ON)
 umbrella_opt_default (HDF5_BUILD_EXAMPLES OFF)
 
+# GLOG 0.6 is the last major version that builds against pdlfs-common without breaking
+umbrella_opt_default (GLOG_TAG "v0.6.0")
+
 umbrella_opt_default (UMBRELLA_BUILD_RDMALIBS ON)
 umbrella_opt_default (MVAPICH_DEVICE "ch3:psm")
 umbrella_opt_default (PARTHENON_DISABLE_HDF5 ON)
