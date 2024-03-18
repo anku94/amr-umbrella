@@ -17,6 +17,10 @@ umbrella_defineopt (AMR_TOOLS_REPO "https://github.com/anku94/amr.git"
 umbrella_defineopt (AMR_TOOLS_TAG "main" STRING "AMR_TOOLS GIT tag")
 umbrella_defineopt (AMR_TOOLS_TAR "amr-tools-${AMR_TOOLS_TAG}.tar.gz"
      STRING "AMR_TOOLS cache tar file")
+
+umbrella_defineopt(AMR_TOOLS_GUROBI OFF BOOL "Build amr-tools with Gurobi")
+umbrella_defineopt(AMR_TOOLS_TAU OFF BOOL "Build amr-tools with TAU")
+
 #
 # generate parts of the ExternalProject_Add args...
 #
@@ -32,15 +36,31 @@ umbrella_patchcheck (AMR_TOOLS_PATCHCMD amr-tools)
 #
 # depends
 #
+set(AMR_TOOLS_DEPENDS )
+
 include (umbrella/pdlfs-common)
-include (umbrella/gurobi)
-include (umbrella/tau)
+list(APPEND AMR_TOOLS_DEPENDS pdlfs-common)
+
+include (umbrella/kokkos)
+list(APPEND AMR_TOOLS_DEPENDS kokkos)
+
+if (AMR_TOOLS_GUROBI)
+  include (umbrella/gurobi)
+  list(APPEND AMR_TOOLS_DEPENDS gurobi)
+endif (AMR_TOOLS_GUROBI)
+
+if (AMR_TOOLS_TAU)
+  include (umbrella/tau)
+  list(APPEND AMR_TOOLS_DEPENDS tau)
+endif (AMR_TOOLS_TAU)
+
+
 
 #
 # create amr-tools target
 #
 ExternalProject_Add (amr-tools
-    DEPENDS pdlfs-common gurobi tau
+    DEPENDS ${AMR_TOOLS_DEPENDS}
     ${AMR_TOOLS_DOWNLOAD} ${AMR_TOOLS_PATCHCMD}
     CMAKE_ARGS -DTAU_ROOT=${CMAKE_INSTALL_PREFIX}
     CMAKE_CACHE_ARGS ${UMBRELLA_CMAKECACHE}

@@ -112,26 +112,11 @@ message (STATUS "  amr_verbose: ${AMR_VERBOSE}")
 # set other configs before we start pulling in the pieces...
 #
 
-# note: NA_INITIALLY_ON is only applied as the defaults the first time
-# you run cmake.  if you want to reconfigure, change MERCURY_BMI, et al.
-umbrella_opt_default (MERCURY_NA_INITIALLY_ON "bmi;ofi;sm")
-
-set (PDLFS_OPTIONS -DPDLFS_MERCURY_RPC=ON -DPDLFS_SNAPPY=OFF
-  -DPDLFS_GFLAGS=OFF -DPDLFS_GLOG=OFF
-  -DPDLFS_VERBOSE=${DELTAFS_VERBOSE})
-
-
-#
-# set other configs before we start pulling in the pieces...
-#
-
 set (PDLFS_OPTIONS -DPDLFS_MERCURY_RPC=OFF -DPDLFS_SNAPPY=OFF
-  -DPDLFS_GFLAGS=OFF -DPDLFS_GLOG=OFF
+    -DPDLFS_GFLAGS=OFF -DPDLFS_GLOG=ON
   -DPDLFS_VERBOSE=${AMR_VERBOSE})
 
 include (umbrella/mvapich)
-include (umbrella/hdf5)
 include (umbrella/pdlfs-common)
-include (umbrella/tau)
 include (umbrella/amr-tools)
-include (umbrella/phoebus)
+include (umbrella/parthenon)

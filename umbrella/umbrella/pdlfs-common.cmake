@@ -39,12 +39,33 @@ umbrella_testcommand (pdlfs-common PDLFS_COMMON_TESTCMD TEST_COMMAND
 #
 # depends
 #
-include (umbrella/mercury)
+set(PDLFS_COMMON_DEPENDS )
+
+# check if list PDLFS_OPTIONS has value -DABCD
+if (DEFINED PDLFS_OPTIONS)
+  list (FIND PDLFS_OPTIONS "-DPDLFS_MERCURY_RPC=ON" PDLFS_USE_MERCURY)
+  if (PDLFS_USE_MERCURY GREATER -1)
+    include (umbrella/mercury)
+    list(APPEND PDLFS_COMMON_DEPENDS mercury)
+  endif (PDLFS_USE_MERCURY GREATER -1)
+
+  list (FIND PDLFS_OPTIONS "-DPDLFS_GFLAGS=ON" PDLFS_USE_GFLAGS)
+  if (PDLFS_USE_GFLAGS GREATER -1)
+    include (umbrella/gflags)
+    list(APPEND PDLFS_COMMON_DEPENDS gflags)
+  endif (PDLFS_USE_GFLAGS GREATER -1)
+
+  list (FIND PDLFS_OPTIONS "-DPDLFS_GLOG=ON" PDLFS_USE_GLOG)
+  if (PDLFS_USE_GLOG GREATER -1)
+    include (umbrella/glog)
+    list(APPEND PDLFS_COMMON_DEPENDS glog)
+  endif (PDLFS_USE_GLOG GREATER -1)
+endif (DEFINED PDLFS_OPTIONS)
 
 #
 # create pdlfs-common target
-#
-ExternalProject_Add (pdlfs-common DEPENDS mercury
+
+ExternalProject_Add (pdlfs-common DEPENDS ${PDLFS_COMMON_DEPENDS}
     ${PDLFS_COMMON_DOWNLOAD} ${PDLFS_COMMON_PATCHCMD}
     CMAKE_ARGS ${PDLFS_OPTIONS} -DBUILD_SHARED_LIBS=ON
         -DBUILD_TESTS=${PDLFS_COMMON_BUILDTESTS}
