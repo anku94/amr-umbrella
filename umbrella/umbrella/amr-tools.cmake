@@ -21,6 +21,36 @@ umbrella_defineopt (AMR_TOOLS_TAR "amr-tools-${AMR_TOOLS_TAG}.tar.gz"
 umbrella_defineopt(AMR_TOOLS_GUROBI OFF BOOL "Build amr-tools with Gurobi")
 umbrella_defineopt(AMR_TOOLS_TAU OFF BOOL "Build amr-tools with TAU")
 
+umbrella_defineopt (AMR_TOOLS_OWNMPI OFF BOOL "Use mpirun in install tree")
+#
+# depends
+#
+set(AMR_TOOLS_DEPENDS )
+set (AMR_CMCACHE "${UMBRELLA_CMAKECACHE}")
+
+include (umbrella/pdlfs-common)
+list(APPEND AMR_TOOLS_DEPENDS pdlfs-common)
+
+include (umbrella/kokkos)
+list(APPEND AMR_TOOLS_DEPENDS kokkos)
+
+if (UMBRELLA_MPI_DEPS)
+  include (umbrella/${UMBRELLA_MPI_DEPS})
+  list(APPEND AMR_TOOLS_DEPENDS ${UMBRELLA_MPI_DEPS})
+  list (APPEND AMR_CMCACHE -DAMR_TOOLS_OWNMPI:STRING=1)
+endif()
+
+if (AMR_TOOLS_GUROBI)
+  include (umbrella/gurobi)
+  list(APPEND AMR_TOOLS_DEPENDS gurobi)
+endif (AMR_TOOLS_GUROBI)
+
+if (AMR_TOOLS_TAU)
+  include (umbrella/tau)
+  list(APPEND AMR_TOOLS_DEPENDS tau)
+  list (APPEND AMR_CMCACHE -DTAU_ROOT:STRING=${CMAKE_INSTALL_PREFIX})
+endif (AMR_TOOLS_TAU)
+
 #
 # generate parts of the ExternalProject_Add args...
 #
@@ -33,33 +63,6 @@ umbrella_patchcheck (AMR_TOOLS_PATCHCMD amr-tools)
 # umbrella_testcommand (amr-tools AMR_TOOLS_TESTCMD
     # TEST_COMMAND ctest -R preload -V )
 
-#
-# depends
-#
-set(AMR_TOOLS_DEPENDS )
-
-include (umbrella/pdlfs-common)
-list(APPEND AMR_TOOLS_DEPENDS pdlfs-common)
-
-include (umbrella/kokkos)
-list(APPEND AMR_TOOLS_DEPENDS kokkos)
-
-if (UMBRELLA_MPI_DEPS)
-  include (umbrella/${UMBRELLA_MPI_DEPS})
-  list(APPEND AMR_TOOLS_DEPENDS ${UMBRELLA_MPI_DEPS})
-endif()
-
-if (AMR_TOOLS_GUROBI)
-  include (umbrella/gurobi)
-  list(APPEND AMR_TOOLS_DEPENDS gurobi)
-endif (AMR_TOOLS_GUROBI)
-
-if (AMR_TOOLS_TAU)
-  include (umbrella/tau)
-  list(APPEND AMR_TOOLS_DEPENDS tau)
-endif (AMR_TOOLS_TAU)
-
-
 
 #
 # create amr-tools target
@@ -67,8 +70,7 @@ endif (AMR_TOOLS_TAU)
 ExternalProject_Add (amr-tools
     DEPENDS ${AMR_TOOLS_DEPENDS}
     ${AMR_TOOLS_DOWNLOAD} ${AMR_TOOLS_PATCHCMD}
-    CMAKE_ARGS -DTAU_ROOT=${CMAKE_INSTALL_PREFIX}
-    CMAKE_CACHE_ARGS ${UMBRELLA_CMAKECACHE}
+    CMAKE_CACHE_ARGS ${AMR_CMCACHE}
     UPDATE_COMMAND ""
 )
 

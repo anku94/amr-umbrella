@@ -439,7 +439,7 @@ include (ExternalProject)
 # for parallel builds to work correctly
 #
 # if using own MPI, this is set to that package (like mvapich)
-set (UMBRELLA_MPI_DEPS "" CACHE STRING "MPI deps to include (if using own MPI)")
+set (UMBRELLA_MPI_DEPS "")
 mark_as_advanced (UMBRELLA_MPI_DEPS)
 
 set (UMBRELLA_MPI_PROV "none" CACHE STRING "MPI to use")
@@ -459,7 +459,8 @@ else ()
 endif()
 
 if (NOT (UMBRELLA_MPI_PROV STREQUAL "none" OR UMBRELLA_MPI_PROV STREQUAL "system"))
-    set (UMBRELLA_MPI_DEPS "${UMBRELLA_MPI_PROV}")
+  set (UMBRELLA_MPI_DEPS "${UMBRELLA_MPI_PROV}")
+  message (STATUS "Umbrella MPI Deps: ${UMBRELLA_MPI_DEPS}")
 endif ()
 
 #
