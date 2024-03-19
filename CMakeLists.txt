@@ -104,6 +104,8 @@ umbrella_opt_default (KOKKOS_TAG "3.5.00")
 umbrella_opt_default (UMBRELLA_BUILD_RDMALIBS ON)
 umbrella_opt_default (MVAPICH_DEVICE "ch3:psm")
 umbrella_opt_default (PARTHENON_DISABLE_HDF5 ON)
+umbrella_opt_default (PARTHENON_DISABLE_OPENMP ON)
+umbrella_opt_default (Kokkos_ENABLE_AGGRESSIVE_VECTORIZATION ON)
 
 #
 # any additional cache variables we want to add that are not already
