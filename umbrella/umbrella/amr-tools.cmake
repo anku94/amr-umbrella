@@ -25,14 +25,14 @@ umbrella_defineopt (AMR_TOOLS_OWNMPI OFF BOOL "Use mpirun in install tree")
 #
 # depends
 #
-set(AMR_TOOLS_DEPENDS )
+
 set (AMR_CMCACHE "${UMBRELLA_CMAKECACHE}")
 
-include (umbrella/pdlfs-common)
-list(APPEND AMR_TOOLS_DEPENDS pdlfs-common)
+set(AMR_TOOLS_DEPENDS glog kokkos pdlfs-common)
 
+include (umbrella/glog)
 include (umbrella/kokkos)
-list(APPEND AMR_TOOLS_DEPENDS kokkos)
+include (umbrella/pdlfs-common)
 
 if (UMBRELLA_MPI_DEPS)
   include (umbrella/${UMBRELLA_MPI_DEPS})
