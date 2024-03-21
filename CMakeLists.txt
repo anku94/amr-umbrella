@@ -128,5 +128,6 @@ if (UMBRELLA_MPI_DEPS)
 endif()
 
 include (umbrella/pdlfs-common)
+include (umbrella/pdlfs-scripts)
 include (umbrella/amr-tools)
 include (umbrella/parthenon)
