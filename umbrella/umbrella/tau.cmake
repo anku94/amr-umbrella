@@ -31,8 +31,7 @@ umbrella_defineopt (TAU_URLMD5 "69aebc5790a17a1548a03cd01ae10c35"
 #
 umbrella_download (TAU_DOWNLOAD tau ${TAU_URLFILE}
   URL "${TAU_BASEURL}/${TAU_URLFILE}"
-    URL_MD5 ${TAU_URLMD5}
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    URL_MD5 ${TAU_URLMD5})
 umbrella_patchcheck (TAU_PATCHCMD tau)
 
 #

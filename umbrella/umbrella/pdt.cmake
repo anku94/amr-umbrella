@@ -31,8 +31,7 @@ umbrella_defineopt (PDT_URLMD5 "a248b1d6874390dcb30feea16a26e0ef"
 #
 umbrella_download (PDT_DOWNLOAD pdt ${PDT_URLFILE}
   URL "${PDT_BASEURL}/${PDT_URLFILE}"
-    URL_MD5 ${PDT_URLMD5}
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    URL_MD5 ${PDT_URLMD5})
 umbrella_patchcheck (PDT_PATCHCMD pdt)
 
 #
